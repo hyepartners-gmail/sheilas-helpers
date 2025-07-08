@@ -1,0 +1,26 @@
+# Node dependencies (we reinstall inside the image)
+**/node_modules
+
+# Local build outputs
+**/dist
+**/build
+
+# Runtime logs & caches
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.cache
+coverage
+.vscode
+
+# Environment & secrets
+.env
+.env.*
+
+# Git data
+.git
+.gitignore
+
+# Mac / OS-specific
+.DS_Store
+.idea
