@@ -6,6 +6,7 @@ const oauth2Client = new google.auth.OAuth2(
   process.env.GMAIL_CLIENT_SECRET,
   `${process.env.API_BASE_URL}/admin/gmail/callback`
 );
+export { oauth2Client }; 
 
 export const GmailService = {
   createAuthUrl() {

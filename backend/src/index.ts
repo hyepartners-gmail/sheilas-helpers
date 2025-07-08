@@ -11,6 +11,9 @@ import taskRoutes from './routes/tasks';
 import adminRoutes from './routes/admin';
 import { errorHandler } from './middleware/errorHandler';
 
+import path from 'path';
+// import { fileURLToPath } from 'url';
+
 dotenv.config();
 
 const app = express();
@@ -24,6 +27,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', (_req, res) => res.json({ status: 'ok' }));
+
+// const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const staticDir = path.join(__dirname, 'public');
+
+app.use(express.static(staticDir));          // serve /public
+app.get('*', (_req, res) =>                  // SPA fallback
+  res.sendFile(path.join(staticDir, 'index.html'))
+);
 
 app.use('/auth', authRoutes);
 app.use('/tasks', taskRoutes);
