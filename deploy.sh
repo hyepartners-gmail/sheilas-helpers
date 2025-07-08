@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
+# load local.env if it exists 
+[ -f local.env ] && { set -a; source local.env; set +a; }
+[ -f .env ] && { set -a; source .env; set +a; }
 
 #############################################
 # CONFIG — override with env vars if needed #
@@ -33,12 +36,6 @@ gcloud run deploy "${SERVICE_NAME}" \
   --port "${PORT}" \
   --min-instances 0 \
   --max-instances 3 \
-  --set-env-vars "NODE_ENV=production" \
-  --set-env-vars "JWT_SECRET=${JWT_SECRET:-changeme}" \
-  --set-env-vars "SESSION_SECRET=${SESSION_SECRET:-changeme}" \
-  --set-env-vars "GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}" \
-  --set-env-vars "GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}" \
-  --set-env-vars "GMAIL_CLIENT_ID=${GMAIL_CLIENT_ID:-}" \
-  --set-env-vars "GMAIL_CLIENT_SECRET=${GMAIL_CLIENT_SECRET:-}"
+  --set-env-vars \ "NODE_ENV=production,JWT_SECRET=${JWT_SECRET:-changeme},SESSION_SECRET=${SESSION_SECRET:-changeme},GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-},GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-},GMAIL_CLIENT_ID=${GMAIL_CLIENT_ID:-},GMAIL_CLIENT_SECRET=${GMAIL_CLIENT_SECRET:-},API_BASE_URL=${API_BASE_URL:-changeme},FRONTEND_URL=${FRONTEND_URL:-changeme},VITE_API_BASE_URL=${VITE_API_BASE_URL:-changeme},VITE_USE_MOCK_DATA=${VITE_USE_MOCK_DATA:-changeme}" \
 
 echo "✅ Deployed ${SERVICE_NAME} (${IMAGE_TAG}) to Cloud Run."

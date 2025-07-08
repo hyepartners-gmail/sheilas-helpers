@@ -36,9 +36,9 @@ app.get('*', (_req, res) =>                  // SPA fallback
   res.sendFile(path.join(staticDir, 'index.html'))
 );
 
-app.use('/auth', authRoutes);
-app.use('/tasks', taskRoutes);
-app.use('/admin', adminRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/tasks', taskRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use(errorHandler);
 

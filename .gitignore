@@ -31,6 +31,7 @@ build/
 ##############################
 .env
 .env.*     # e.g. .env.production, .env.development
+local.env
 
 ##############################
 # Editor directories & files
