@@ -9,6 +9,8 @@ import './strategies';                       // registers Passport strategies
 import authRoutes from './routes/auth';
 import taskRoutes from './routes/tasks';
 import adminRoutes from './routes/admin';
+import usersRoutes from './routes/users';
+import bulletinRoutes from './routes/bulletin';
 import { errorHandler } from './middleware/errorHandler';
 
 import path from 'path';
@@ -32,13 +34,16 @@ app.get('/', (_req, res) => res.json({ status: 'ok' }));
 const staticDir = path.join(__dirname, 'public');
 
 app.use(express.static(staticDir));          // serve /public
-app.get('*', (_req, res) =>                  // SPA fallback
-  res.sendFile(path.join(staticDir, 'index.html'))
-);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/user', usersRoutes); 
+app.use('/api/bulletin', bulletinRoutes);
+
+app.get('*', (_req, res) =>                  // SPA fallback
+  res.sendFile(path.join(staticDir, 'index.html'))
+);
 
 app.use(errorHandler);
 

@@ -1,37 +1,58 @@
 import { Datastore } from '@google-cloud/datastore';
-import { User, Task } from '../models';
+import { User, Task, Feedback, BulletinPost } from '../models';
 
-const ds = new Datastore();
+/* Use the “sheilas-helpers” namespace for all entities */
+const ds = new Datastore({ namespace: 'sheilas-helpers' });
 
 export const DatastoreService = {
   /* Users */
-  async getUserById(id: string) {
-    const [u] = await ds.lookup(ds.key(['User', id]));
-    return u as User | undefined;
+  async getUserById(id: string): Promise<User | undefined> {
+    const [entity] = await ds.get(ds.key(['User', id]));
+    return entity as User | undefined;
   },
-  async getUserByEmail(email: string) {
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
     const q = ds.createQuery('User').filter('email', email).limit(1);
-    const [r] = await q.run();
-    return r[0] as User | undefined;
+    const [[entity]] = await q.run();
+    return entity as User | undefined;
   },
+
   saveUser(user: User) {
-    const key = ds.key(['User', user.id]);
-    return ds.save({ key, data: user });
+    return ds.save({ key: ds.key(['User', user.id]), data: user });
   },
 
   /* Tasks */
   async saveTask(task: Task) {
-    const key = ds.key(['Task', task.id]);
-    return ds.save({ key, data: task });
+    return ds.save({ key: ds.key(['Task', task.id]), data: task });
   },
-  async getTask(id: string) {
-    const [t] = await ds.lookup(ds.key(['Task', id]));
-    return t as Task | undefined;
+
+  async getTask(id: string): Promise<Task | undefined> {
+    const [entity] = await ds.get(ds.key(['Task', id]));
+    return entity as Task | undefined;
   },
+
   async listTasks(filter: Partial<Task> = {}) {
     let q = ds.createQuery('Task');
-    Object.entries(filter).forEach(([k, v]) => q = q.filter(k, v));
+    Object.entries(filter).forEach(([k, v]) => (q = q.filter(k, v)));
     const [arr] = await q.run();
     return arr as Task[];
   },
+
+  /* Feedback */
+  async saveFeedback(fb: Feedback) {
+    return ds.save({ key: ds.key(['Feedback', fb.id]), data: fb });
+  },
+
+  async saveBulletin(post: BulletinPost) {
+  return ds.save({ key: ds.key(['Bulletin', post.id]), data: post });
+},
+
+async listBulletin(): Promise<BulletinPost[]> {
+  const [arr] = await ds.createQuery('Bulletin')
+                         .order('createdAt', { descending: true })
+                         .run();
+  return arr as BulletinPost[];
+},
+
+
 };

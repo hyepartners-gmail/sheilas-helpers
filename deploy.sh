@@ -4,10 +4,17 @@ set -euo pipefail
 [ -f local.env ] && { set -a; source local.env; set +a; }
 [ -f .env ] && { set -a; source .env; set +a; }
 
+# Pick any .aiff in /System/Library/Sounds  (or point to your own .wav/.mp3)
+SUCCESS_SOUND="/System/Library/Sounds/Ping.aiff"
+FAIL_SOUND="/System/Library/Sounds/Basso.aiff"
+STARTUP_SOUND="/System/Library/Sounds/Hero.aiff"
+
+afplay "$STARTUP_SOUND" 
+trap 'afplay "$FAIL_SOUND"' ERR
+
 #############################################
 # CONFIG — override with env vars if needed #
 #############################################
-PROJECT_ID="hyepartners-324923474516"         # gcloud config set project …
 REGION="us-central1"
 SERVICE_NAME="sheilas-helpers"
 REPO="sheilas-helpers" 
@@ -36,6 +43,8 @@ gcloud run deploy "${SERVICE_NAME}" \
   --port "${PORT}" \
   --min-instances 0 \
   --max-instances 3 \
-  --set-env-vars \ "NODE_ENV=production,JWT_SECRET=${JWT_SECRET:-changeme},SESSION_SECRET=${SESSION_SECRET:-changeme},GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-},GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-},GMAIL_CLIENT_ID=${GMAIL_CLIENT_ID:-},GMAIL_CLIENT_SECRET=${GMAIL_CLIENT_SECRET:-},API_BASE_URL=${API_BASE_URL:-changeme},FRONTEND_URL=${FRONTEND_URL:-changeme},VITE_API_BASE_URL=${VITE_API_BASE_URL:-changeme},VITE_USE_MOCK_DATA=${VITE_USE_MOCK_DATA:-changeme}" \
+  --set-env-vars \ "VITE_USE_MOCK_DATA=false,PROJECT_ID=${PROJECT_ID:-changeme},NODE_ENV=production,JWT_SECRET=${JWT_SECRET:-changeme},SESSION_SECRET=${SESSION_SECRET:-changeme},GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-},GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-},GMAIL_CLIENT_ID=${GMAIL_CLIENT_ID:-},GMAIL_CLIENT_SECRET=${GMAIL_CLIENT_SECRET:-},API_BASE_URL=${API_BASE_URL:-changeme},FRONTEND_URL=${FRONTEND_URL:-changeme},VITE_API_BASE_URL=${VITE_API_BASE_URL:-changeme}" \
 
 echo "✅ Deployed ${SERVICE_NAME} (${IMAGE_TAG}) to Cloud Run."
+
+afplay "$SUCCESS_SOUND" 

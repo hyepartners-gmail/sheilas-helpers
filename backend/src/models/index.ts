@@ -11,14 +11,37 @@ export interface User {
   preferredTasks?: string[];
 }
 
+export interface Recurrence {
+  frequency: 'daily' | 'weekly' | 'monthly';
+  interval: number;          // 1 = every week, 2 = every 2 weeks, etc.
+  endDate?: string;          // ISO
+}
+
 export interface Task {
   id: string;
-  createdBy: string;          // Sheila ID
+  createdBy: string;
   category: string;
+  title?: string;
   description: string;
-  dateTime: string;           // ISO
+  dateTime: string;                // first occurrence or one-shot
   urgency: 'Low' | 'Medium' | 'High';
-  recurrence?: 'daily' | 'weekly' | 'monthly';
-  assignedTo?: string;        // Helper ID
-  status: 'open' | 'committed' | 'completed';
+  status: 'open' | 'committed' | 'completed' | 'proposed' | 'recurring';
+  assignedTo?: string;
+  recurrence?: Recurrence;         // ← add
+}
+
+export interface Feedback {
+  id: string;
+  helperId: string;
+  message: string;
+  createdAt: string;         // ISO timestamp
+}
+
+// src/models/index.ts  (append)
+export interface BulletinPost {
+  id: string;
+  title: string;
+  content: string;
+  authorId: string;          // Sheila’s user ID
+  createdAt: string;         // ISO timestamp
 }
